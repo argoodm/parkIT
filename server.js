@@ -29,12 +29,7 @@ app.use((req,res,next) => {
     next()
 })
 
-// app.get('/', (req, res, next) => {
-//     res.send('Hello NODE API')
-//     next()
-// })
-// app.use("/parks", parks);
-// app.use("/users", users)
+
 app.use("/api/v1", parks)
 app.use("/api/v1", users);
 app.use("*", (req, res) => res.status(404).json({error: "not found hi hi hi"}));

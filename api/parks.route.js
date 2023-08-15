@@ -21,12 +21,9 @@ router.get('/parks/:id', getPark)
 
 router.post('/parks', createPark)
 
-// delete a park by ID 
+
 
 router.delete('/parks/:id', deletePark)
-
-
-// patch route for a park 
 
 router.patch('/parks/:id', updatePark)
 

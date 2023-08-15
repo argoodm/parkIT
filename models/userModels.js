@@ -2,7 +2,6 @@ import mongoose, { mongo } from "mongoose"
 import { Schema } from "mongoose"
 import { boolean } from "webidl-conversions"
 
-// const Schema = mongoose.Schema
 
 const userSchema = new Schema({
         "journal": [

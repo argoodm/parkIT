@@ -31,8 +31,6 @@ router.get('/user/:id/parksvisited', getparksVisited)
 router.get('/user/:id/list', getpackingList)
 router.get('/user/:userId/journal/:entryId', getJournalEntry)
 
-// getJournalEntry ('/user/:userId/journal/:entryId', getJournalEntry);
-
 router.patch('/user/:id/list', addItem)
 
 router.patch('/user/:id/parksvisited', addPark)

@@ -83,32 +83,7 @@ const getJournal = async (req, res) => {
     }
 }
 
-//get single journal entry 
-// const getJournalEntry = async (req, res) => {
-//     const { userId, entryId } = req.params;
 
-//     try {
-//         // Find the user by ID
-//         const user = await User.findById(userId);
-
-//         if (!user) {
-//             return res.status(404).json({ error: 'User not found' });
-//         }
-
-//         // Search for the specific journal entry by title or another identifier
-//         const journalEntry = user.journal.find(entry => entry._id.toString() === entryId);
-
-//         if (!journalEntry) {
-//             return res.status(404).json({ error: 'Journal entry not found' });
-//         }
-
-//         res.status(200).json(journalEntry);
-//     } catch (error) {
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
-
-// get list of parks visited
 
 const getparksVisited = async (req, res) => {
     const { id } = req.params;
