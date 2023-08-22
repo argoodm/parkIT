@@ -8,7 +8,7 @@ import { createUser,
     deleteUser,
     updateUser,
     getpackingList, 
-    getJournal, getparksVisited, createJournalEntry, createpackingList, addItem, addPark, deleteJournalEntry, getJournalEntry, updateJournalEntry
+    getJournal, getparksVisited, createJournalEntry, updateItem, createpackingList, addItemToList, addParkToVisited, deleteJournalEntry, getJournalEntry, updateJournalEntry
  } from "../controllers/userControllers.js"
 
 
@@ -31,11 +31,12 @@ router.get('/user/:id/parksvisited', getparksVisited)
 router.get('/user/:id/list', getpackingList)
 router.get('/user/:userId/journal/:entryId', getJournalEntry)
 
-router.patch('/user/:id/list', addItem)
+router.post('/user/:id/list', addItemToList)
 
-router.patch('/user/:id/parksvisited', addPark)
+router.post('/user/:id/parksvisited', addParkToVisited)
 
 router.patch('/user/:userId/journal/:entryId', updateJournalEntry)
+router.patch('/user/:userId/list/:itemId', updateItem)
 
 
 

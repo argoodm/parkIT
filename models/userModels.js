@@ -11,14 +11,20 @@ const userSchema = new Schema({
                 "tags": Array
             }
         ],
-        "packingList": {
-            type: Map,
-            of: Boolean,
-          },
-        "parksVisited": {
-            type: Map, 
-            of: Boolean
+         
+        "packingList": [
+            {
+                itemName: String,
+                isChecked: Boolean
+            }
+        ],
+    
+        "parksVisited": [
+            {
+            parkName: String, 
+            hasVisited: Boolean
         }
+    ]
 }, { timestamps: true });
     
 

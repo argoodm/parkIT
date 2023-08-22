@@ -1,29 +1,81 @@
 import { Park } from "../models/parksModel.js"
 import mongoose from "mongoose"
+import * as dotenv from "dotenv"
 
-//create a new park 
-const createPark = async(req, res) => {
-    const {name, historyBlurb, reccomendedSights, alerts} = req.body
+
+dotenv.config()
+
+const apiKey = process.env.NPS_API_KEY
+
+const fetchParkCodeFromNPS = async (fullName) => {
+  try {
     
-    try {
-        const park = await Park.create({
-            name, historyBlurb, reccomendedSights, alerts})
-            res.status(200).json(park)
-    } catch (error) {
-        res.status(400).json({error: error.message})
+    ; // Make sure your API key is loaded from .env
 
+    const apiUrl = `https://developer.nps.gov/api/v1/parks?q=${fullName}&api_key=${apiKey}`
+    const response = await fetch(apiUrl)
+
+    if (!response.ok) {
+      throw new Error('Error fetching park code from NPS API')
     }
 
-    res.json({mssg: 'post a new park'})
+    const data = await response.json();
+    if (data.data && data.data.length > 0) {
+      return data.data[0].parkCode;
+    } else {
+      throw new Error('Park not found in NPS API response')
+    }
+  } catch (error) {
+    console.error('Error fetching park code from NPS API:', error.message)
+    return null
+  }
 }
 
-// get all workout 
+const fetchAlertsFromNPS = async (parkCode) => {
+
+
+    try {
+    
+       
+      const response = await fetch(` https://developer.nps.gov/api/v1/alerts?parkCode=${parkCode}&api_key=${apiKey}`)
+      const data = await response.json()
+      return data.data
+
+    } catch (error) {
+      throw new Error('Error fetching alerts from NPS API: ' + error.message)
+    }
+  }
+
+
+const createPark = async (req, res) => {
+    const { name, historyBlurb, recommendedSights } = req.body
+  
+    try {
+        const parkCode = await fetchParkCodeFromNPS(name)
+
+        if (!parkCode) {
+          return res.status(404).json({ error: 'Park not found in NPS database' })
+        }
+        
+        const npsAlerts = await fetchAlertsFromNPS(parkCode)
+
+        const park = await Park.create({
+            name, historyBlurb, recommendedSights, parkCode, alerts: npsAlerts
+        })
+        
+        res.status(200).json(park)
+
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+}
+
 
 const getParks = async (req, res) => {
     const parks = await Park.find({}).sort({createdAt: -1})
     res.status(200).json(parks)
 }
-// get a single workout 
+// get a single park 
 
 const getPark = async (req, res) => {
     const {id} = req.params
@@ -38,9 +90,21 @@ const getPark = async (req, res) => {
 
 }
 
+// get alerts
 
 
+// const get/post/patchAlerts = async( req, res ) => {
+//     // name or id request parameter
+//     // (name becasue the parks? query selector)
+//     // validate ID
+//     // const name = name 
+//     // const alerts = parks.alerts
+//     // const parks.alerts. await(/ fetch 'https://developer.nps.gov/api/v1/parks?parkCode=acad')
 
+//     // catch
+//     // error message 
+// curl 'https://developer.nps.gov/api/v1/parks?parkCode=acad&api_key=INSERT-API-KEY-HERE' 
+// }
 //delete a workout 
 
 const deletePark = async (req, res) => {

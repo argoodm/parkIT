@@ -11,14 +11,21 @@ const parkSchema = new Schema({
         type: String,
         required:true,
     },
-    reccomendedSights: {
+    recommendedSights: {
         type: Array,
-        required :true
+        required: false
     },
-    alerts: {
-        type: Array, 
-        required: true 
-    }
+    alerts: [
+        {
+        
+            "url": String,
+            "title": String,
+            "parkCode": String,
+            "description": String,
+            "relatedRoadEvents": Array,
+            "lastIndexedDate": String
+        }
+    ],
 
 }, { timestamps: true })
 

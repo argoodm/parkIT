@@ -170,28 +170,87 @@ const addItem = async (req, res) => {
     }
   };
 
-
-
-const addPark = async (req, res) => {
-    const { id } = req.params;
-    const { parkName } = req.body;
+const updateItem = async (req, res) => {
+  const {userId, itemId} = req.params
+  const { isChecked } = req.body
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      const updatedList = user.packingList.maps(item => {
+        if (item._id.toString() === itemId) {
+          return {...item, isChecked}
+        }
+        return item;
+      })
 
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+      user.packingList = updatedList
+      await user.save()
 
-    // Assuming your packingList is a Map of items with Boolean values
-    user.parksVisited.set(parkName, false); // Set the value for the new item to true
-    await user.save();
-
-    res.status(200).json({ message: 'park added to visited' });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+      res.status(200).json({message: 'item checked!'})
+  
+} catch (error) {
+  res.status(400).json({error: error.message})
 }
+}
+
+const addParkToVisited = async (req, res) => {
+    const { id } = req.params;
+    const { parkName } = req.body;
+  
+    try {
+      const user = await User.findById(id);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Check if the park is already in the parksVisited array
+      const existingPark = user.parksVisited.find(park => park.parkName === parkName);
+      if (existingPark) {
+        return res.status(400).json({ error: 'Park already exists in parksVisited' });
+      }
+  
+      // Add the new park to the parksVisited array
+      user.parksVisited.push({ parkName, hasVisited: false });
+      await user.save();
+  
+      res.status(200).json({ message: 'Park added to visited' });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
+  
+
+  const addItemToList = async (req, res) => {
+    const { id } = req.params;
+    const { itemName } = req.body;
+  
+    try {
+      const user = await User.findById(id);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Check if the park is already in the parksVisited array
+      const existingItem = user.packingList.find(user => user.itemName === itemName);
+      if (existingItem) {
+        return res.status(400).json({ error: 'Park already exists in parksVisited' });
+      }
+  
+      // Add the new park to the parksVisited array
+      user.packingList.push({ itemName, hasVisited: false });
+      await user.save();
+  
+      res.status(200).json({ message: 'Item added to list' });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
 //delete a user
 
 const deleteUser = async (req, res) => {
@@ -302,4 +361,4 @@ export {
     getUsers,
     deleteUser,
     updateUser,
-    getpackingList, getJournal, getparksVisited, createJournalEntry, createpackingList, addItem, addPark, deleteJournalEntry, getJournalEntry, updateJournalEntry}
+    getpackingList, getJournal, updateItem, getparksVisited, createJournalEntry, createpackingList, addItemToList, addParkToVisited, deleteJournalEntry, getJournalEntry, updateJournalEntry}
